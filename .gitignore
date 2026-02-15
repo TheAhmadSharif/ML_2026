@@ -79,3 +79,12 @@ venv_*/
 .cache/
 temp/
 tmp/
+
+
+
+
+
+
+
+
+*.pdf

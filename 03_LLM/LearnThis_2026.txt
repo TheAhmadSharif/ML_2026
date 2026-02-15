@@ -1,0 +1,1449 @@
+
+––––––––––––––––––– Learn With Summit
+
+https://www.youtube.com/watch?v=lg4uP7QjIZk
+
+
+
+–––––––––––– 26 January 2026
+Mathematics
+    Linear Algebra (Vector, Metrics)
+    Statistics 
+        Probability
+        Variants
+        Derivative
+    Calculas
+Python
+    Numpy
+    Pandas
+    TensorFlow
+    PyTorch
+    Keras
+    Scikit Learn 
+
+Machine Learning (ML)
+
+    Supervised
+    Unsupervised
+    Reinforcement
+
+
+Deep Learning 
+    1. NLP (Natural Language Processing) -> Generate Text 
+        RNN
+        CSTM RNN
+        GRU
+        Encoder/Decoder 
+        Transformer 
+            LLMs    
+                OpenAI
+                Google Models
+                Anthropic
+    2. Computer Vision
+        CNN 
+    3. 
+
+
+
+Generative AI 
+    LLMS 
+    Frameworks
+        LangChain
+        LangGraph
+        HuggingFace
+        Lama Index
+    Fine Tuning 
+        QLora, Lora
+    RAGSs : Retrival Augmented Generation
+    Vector DB 
+
+
+Agentic AI 
+
+
+
+
+
+
+
+
+
+
+
+
+Topic: LLM 
+I want to following
+From where can I start 
+
+
+Generative AI 
+    LLMS 
+    Frameworks
+        LangChain
+        LangGraph
+        HuggingFace
+        Lama Index
+    Fine Tuning 
+        QLora, Lora
+    RAGSs : Retrival Augmented Generation
+    Vector DB
+
+
+I would like to start with LangChain
+
+
+
+––––––––––––––––––––––––––––– Ashish Vaswani
+
+
+Languages: Python, C++, R, MatLab
+LLMs & RAG: Ollama, HuggingFace Transformers, LangChain, Chroma (Vector DB)
+Data & Statistics: Statistical Modeling, Probability Distributions, Regression Analysis, Hypothesis Testing,
+Web & Backend:  Javascript, PHP, React, Angular, MongoDB, MySQL, NodeJS, FastAPI, Laravel
+Cloud & ML Platforms : AWS (EC2, S3, SageMaker, IAM, CloudWatch),
+DevOps: Linux/Ubuntu, Git, GitHub Actions, CI/CD, AWS CLI, 
+
+
+
+
+LLM 
+
+ LoRA
+ QLora
+ Fine tuning
+ Rag 
+HuggingFace
+LangChain
+Chroma (Vector DB)
+
+> “Designed and deployed a production-grade RAG system serving X documents with Y latency on AWS.”
+
+LLMs & RAG: Ollama, HuggingFace Transformers, LangChain, Chroma (Vector DB)
+
+
+––––––––––––––––– 
+# Complete LLM Learning Path - Week by Week
+
+## Your Project Structure
+```
+03_LLM/
+├── 01_Fundamentals/
+│   ├── 01_Tokenization/
+│   ├── 02_Embeddings/
+│   ├── 03_Transformers/
+│   └── 04_Ollama/
+├── 02_RAG/
+│   ├── 01_Simple_RAG_HelloWorld/
+│   ├── 02_Document_Chunking/
+│   ├── 03_Vector_Embeddings/
+│   ├── 04_Semantic_Search/
+│   └── 05_LangChain_Integration/
+├── 03_Production_RAG/
+│   ├── FastAPI_Backend/
+│   ├── React_Frontend/
+│   └── Docker_Deployment/
+└── 04_Fine_Tuning/
+    ├── 01_LoRA_Basic/
+    ├── 02_QLoRA_Advanced/
+    └── 03_Custom_Dataset/
+```
+
+---
+
+# PHASE 3: LLM & RAG (Weeks 9-16)
+
+## Week 9: LLM Fundamentals - Tokenization
+
+### What is Tokenization?
+Text → Numbers is how LLMs work. Tokenization converts text into chunks (tokens) that the model understands.
+
+Example:
+```
+"Hello world" 
+→ [101, 7592, 2088, 102]  (token IDs)
+```
+
+### Concepts
+- **Subword Tokenization:** Text split into smaller pieces than words
+- **Token Limit:** Models have max tokens (4K, 8K, 32K, etc.)
+- **Special Tokens:** `[CLS]`, `[SEP]`, `[PAD]` have special meaning
+
+### Project: 01_Tokenization
+
+**File:** `03_LLM/01_Fundamentals/01_Tokenization/tokenizer_basics.py`
+
+```python
+from transformers import AutoTokenizer
+
+# Load a tokenizer
+tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+
+# Example 1: Basic tokenization
+text = "Hello, this is a test!"
+tokens = tokenizer.tokenize(text)
+print("Tokens:", tokens)
+# Output: ['hello', ',', 'this', 'is', 'a', 'test', '!']
+
+# Example 2: Convert to token IDs
+token_ids = tokenizer.encode(text)
+print("Token IDs:", token_ids)
+# Output: [101, 7592, 1010, 2023, 2003, 1037, 3231, 999, 102]
+
+# Example 3: Token count (important for cost/speed)
+num_tokens = len(tokenizer.encode(text))
+print(f"Number of tokens: {num_tokens}")
+
+# Example 4: Decode back to text
+decoded = tokenizer.decode(token_ids)
+print("Decoded:", decoded)
+
+# Example 5: Batch tokenization
+texts = ["Hello world", "How are you?", "Great day today"]
+batch_tokens = tokenizer(texts, padding=True, truncation=True, return_tensors="pt")
+print("Batch shape:", batch_tokens['input_ids'].shape)
+
+# Example 6: Different tokenizers have different vocabularies
+tokenizer_gpt = AutoTokenizer.from_pretrained("gpt2")
+tokens_gpt = tokenizer_gpt.tokenize(text)
+print("GPT2 tokens:", tokens_gpt)
+# Different from BERT!
+```
+
+**Tasks:**
+- [ ] Tokenize 5 different sentences
+- [ ] Compare BERT vs GPT2 tokenizers
+- [ ] Count tokens in a longer document (1000 words)
+- [ ] Understand what happens with special characters, emojis
+
+**Output:** Script that shows token counts and comparison
+
+---
+
+## Week 9-10: LLM Fundamentals - Embeddings
+
+### What are Embeddings?
+Vectors that represent meaning. Similar words = similar vectors.
+
+```
+"king" - "man" + "woman" ≈ "queen"  (word relationships)
+```
+
+### Key Concepts
+- **Embedding Dimension:** Usually 384-1536 (how many numbers represent one word/sentence)
+- **Contextual vs Static:** BERT embeddings change based on context; word2vec doesn't
+- **Similarity:** Use cosine similarity to find similar texts
+
+### Project: 02_Embeddings
+
+**File:** `03_LLM/01_Fundamentals/02_Embeddings/embedding_basics.py`
+
+```python
+from sentence_transformers import SentenceTransformer
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Load embedding model (lightweight, perfect for learning)
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+# Example 1: Create embeddings
+sentences = [
+    "The cat sat on the mat",
+    "A feline rested on the rug",
+    "The dog played in the park",
+    "Artificial intelligence is powerful"
+]
+
+embeddings = model.encode(sentences)
+print(f"Embedding shape: {embeddings.shape}")
+# Output: (4, 384) - 4 sentences, each 384-dimensional vector
+
+# Example 2: Compute similarity between sentences
+similarities = cosine_similarity(embeddings)
+print("Similarity Matrix:")
+print(similarities)
+# Similar sentences (like sentence 0 & 1) will have similarity close to 1
+
+# Example 3: Find most similar sentence to a query
+query = "A cat on a blanket"
+query_embedding = model.encode(query)
+query_embedding = query_embedding.reshape(1, -1)
+
+similarities_to_query = cosine_similarity(query_embedding, embeddings)[0]
+most_similar_idx = np.argmax(similarities_to_query)
+print(f"Most similar to query: {sentences[most_similar_idx]}")
+print(f"Similarity score: {similarities_to_query[most_similar_idx]:.4f}")
+
+# Example 4: Batch embedding (efficient)
+batch_embeddings = model.encode(sentences, batch_size=32, show_progress_bar=True)
+
+# Example 5: Different embedding models for different tasks
+# all-MiniLM-L6-v2: Fast, 384-dim (good for learning)
+# all-mpnet-base-v2: Better quality, 768-dim (slower)
+# all-distilroberta-v1: Good balance, 768-dim
+
+print(f"\nModel info:")
+print(f"Model name: {model.get_sentence_embedding_dimension()}-dim")
+```
+
+**Tasks:**
+- [ ] Create embeddings for 10 sentences
+- [ ] Compute similarity between all pairs
+- [ ] Find semantically similar sentences
+- [ ] Understand why embedding dimension matters (384 vs 768)
+
+**Output:** Similarity matrix visualization, most/least similar pairs
+
+---
+
+## Week 10: LLM Fundamentals - Transformer Architecture
+
+### What is a Transformer?
+Neural network architecture that uses **attention** to understand relationships between words.
+
+### Key Components
+```
+Input Text
+    ↓
+Tokenization
+    ↓
+Embedding Layer (convert tokens to vectors)
+    ↓
+Transformer Blocks (12-96 layers)
+    ├─ Self-Attention (what parts matter?)
+    ├─ Feed-Forward Network
+    └─ Layer Normalization
+    ↓
+Output (embeddings or predictions)
+```
+
+### Why Transformers?
+- RNNs process words sequentially (slow)
+- Transformers process all words in parallel (fast)
+- Attention mechanism learns which words are relevant
+
+### Project: 03_Transformers
+
+**File:** `03_LLM/01_Fundamentals/03_Transformers/transformer_basics.py`
+
+```python
+from transformers import AutoModel, AutoTokenizer
+import torch
+import numpy as np
+
+# Load model and tokenizer
+model_name = "bert-base-uncased"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModel.from_pretrained(model_name, output_hidden_states=True)
+
+# Example 1: Forward pass through transformer
+text = "The cat sat on the mat"
+inputs = tokenizer(text, return_tensors="pt")
+
+with torch.no_grad():
+    outputs = model(**inputs)
+
+# Get embeddings from last hidden layer
+last_hidden_state = outputs.last_hidden_state
+print(f"Output shape: {last_hidden_state.shape}")
+# (1, 10, 768) - batch_size=1, 10 tokens, 768-dim embeddings
+
+# Example 2: Get sentence embedding (average of all tokens)
+sentence_embedding = last_hidden_state.mean(dim=1)
+print(f"Sentence embedding shape: {sentence_embedding.shape}")
+# (1, 768)
+
+# Example 3: Understand attention (which words pay attention to which)
+# BERT has 12 layers, each with 12 attention heads
+attention_weights = outputs.attentions[-1]  # Last layer attention
+print(f"Attention shape: {attention_weights.shape}")
+# (batch=1, heads=12, seq_len=10, seq_len=10)
+
+# Example 4: Visualize attention for one head
+first_head_attention = attention_weights[0, 0]  # First batch, first head
+tokens = tokenizer.tokenize(text)
+print("Tokens:", tokens)
+print("Attention weights shape:", first_head_attention.shape)
+
+# Example 5: Compare different transformer models
+models_to_try = [
+    "bert-base-uncased",      # 110M params
+    "distilbert-base-uncased", # 66M params (faster)
+    "roberta-base",            # 125M params (better quality)
+]
+
+for model_name in models_to_try:
+    model = AutoModel.from_pretrained(model_name)
+    num_params = model.num_parameters()
+    print(f"{model_name}: {num_params:,} parameters")
+
+# Example 6: Understand hidden layers
+print(f"Number of layers: {model.config.num_hidden_layers}")
+print(f"Hidden size (embedding dim): {model.config.hidden_size}")
+print(f"Number of attention heads: {model.config.num_attention_heads}")
+```
+
+**Tasks:**
+- [ ] Load 3 different transformer models, compare parameters
+- [ ] Visualize attention patterns
+- [ ] Understand why deeper models perform better
+- [ ] Test on long sequences (what happens at token limit?)
+
+**Output:** Attention visualization, model comparison table
+
+---
+
+## Week 11: Ollama Setup & Local LLM Inference
+
+### What is Ollama?
+Easy way to run LLMs locally without code. Download once, use anywhere.
+
+**Why Ollama?**
+- No API costs
+- Data stays on your machine
+- Fast for development and testing
+
+### Installation & Setup
+
+**File:** `03_LLM/01_Fundamentals/04_Ollama/ollama_setup.md`
+
+```bash
+# Download from https://ollama.ai
+
+# After installation, in terminal:
+ollama pull mistral    # ~4GB, 7B model (fast)
+ollama pull llama2     # ~4GB, 7B model (good quality)
+ollama pull neural-chat # ~4GB, optimized for chat
+
+# Test it
+ollama run mistral
+# Type: Hello! How are you?
+# Exit with Ctrl+D
+```
+
+### Project: 04_Ollama_Integration
+
+**File:** `03_LLM/01_Fundamentals/04_Ollama/ollama_client.py`
+
+```python
+import requests
+import json
+
+OLLAMA_API = "http://localhost:11434/api"
+
+def ask_ollama(prompt, model="mistral"):
+    """
+    Send a prompt to Ollama and get response
+    Make sure to run: ollama serve (in another terminal)
+    """
+    url = f"{OLLAMA_API}/generate"
+    
+    payload = {
+        "model": model,
+        "prompt": prompt,
+        "stream": False  # False for complete response at once
+    }
+    
+    response = requests.post(url, json=payload)
+    result = response.json()
+    return result['response']
+
+# Example 1: Simple inference
+response = ask_ollama("What is machine learning?")
+print(response)
+
+# Example 2: With temperature (creativity)
+# Low temp (0.1) = deterministic, High temp (0.9) = creative
+prompt = "Write a creative poem about coding"
+response = ask_ollama(prompt, model="mistral")
+print(response)
+
+# Example 3: Measure latency
+import time
+start = time.time()
+response = ask_ollama("Hello, how are you?")
+latency = time.time() - start
+print(f"Response time: {latency:.2f}s")
+
+# Example 4: Compare models
+models = ["mistral", "llama2", "neural-chat"]
+test_prompt = "Explain Python in 2 sentences"
+
+for model in models:
+    try:
+        response = ask_ollama(test_prompt, model=model)
+        print(f"\n{model}:")
+        print(response[:200])  # First 200 chars
+    except Exception as e:
+        print(f"{model}: Not installed")
+
+# Example 5: Streaming response (useful for web apps)
+def ask_ollama_streaming(prompt, model="mistral"):
+    url = f"{OLLAMA_API}/generate"
+    payload = {
+        "model": model,
+        "prompt": prompt,
+        "stream": True
+    }
+    
+    response = requests.post(url, json=payload, stream=True)
+    for line in response.iter_lines():
+        if line:
+            data = json.loads(line)
+            yield data['response']  # Print token by token
+
+# Usage:
+print("Streaming response:")
+for token in ask_ollama_streaming("Tell me a joke"):
+    print(token, end='', flush=True)
+```
+
+**Tasks:**
+- [ ] Install Ollama
+- [ ] Download mistral and llama2
+- [ ] Test inference with different prompts
+- [ ] Measure latency/speed
+- [ ] Understand streaming vs non-streaming
+
+**Output:** Working Python client that talks to Ollama
+
+---
+
+# PHASE 3B: RAG Systems (Weeks 12-16)
+
+## Week 12: Simple RAG - Hello World
+
+### RAG Flow
+```
+User Question
+    ↓
+Retrieve: Search knowledge base for relevant documents
+    ↓
+Augment: Add retrieved documents to prompt
+    ↓
+Generate: LLM creates answer based on context
+    ↓
+Return answer to user
+```
+
+### Why RAG over Fine-tuning?
+- Update knowledge without retraining
+- Cost-effective
+- Works with any LLM (local or API)
+- More transparent (see what it retrieved)
+
+### Project: 01_Simple_RAG_HelloWorld
+
+**File:** `03_LLM/02_RAG/01_Simple_RAG_HelloWorld/rag_hello_world.py`
+
+```python
+from sentence_transformers import SentenceTransformer
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+import requests
+import json
+
+# Step 1: Create a simple knowledge base
+documents = [
+    "Python is a high-level programming language created by Guido van Rossum.",
+    "Machine Learning is a subset of Artificial Intelligence.",
+    "The capital of France is Paris.",
+    "Transformers are neural networks that use self-attention mechanisms.",
+    "NumPy is a Python library for numerical computing."
+]
+
+# Step 2: Load embedding model
+embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+
+# Step 3: Embed all documents
+doc_embeddings = embedding_model.encode(documents)
+print(f"Embedded {len(documents)} documents, each {doc_embeddings.shape[1]}-dim")
+
+# Step 4: Function to retrieve relevant documents
+def retrieve_documents(query, top_k=2):
+    """Retrieve top-k most similar documents"""
+    query_embedding = embedding_model.encode(query)
+    query_embedding = query_embedding.reshape(1, -1)
+    
+    similarities = cosine_similarity(query_embedding, doc_embeddings)[0]
+    top_indices = np.argsort(similarities)[::-1][:top_k]
+    
+    retrieved = [documents[i] for i in top_indices]
+    scores = [similarities[i] for i in top_indices]
+    
+    return retrieved, scores
+
+# Step 5: Build RAG prompt
+def build_rag_prompt(query, retrieved_docs):
+    """Create prompt with retrieved context"""
+    context = "\n".join([f"- {doc}" for doc in retrieved_docs])
+    
+    prompt = f"""Answer the question based on the following context:
+
+Context:
+{context}
+
+Question: {query}
+Answer:"""
+    
+    return prompt
+
+# Step 6: Generate answer using Ollama
+def answer_question(query):
+    """Full RAG pipeline"""
+    # Retrieve
+    retrieved, scores = retrieve_documents(query, top_k=2)
+    print(f"\nQuery: {query}")
+    print(f"Retrieved documents:")
+    for doc, score in zip(retrieved, scores):
+        print(f"  - (score: {score:.3f}) {doc}")
+    
+    # Build prompt
+    prompt = build_rag_prompt(query, retrieved)
+    print(f"\nPrompt sent to LLM:")
+    print(prompt)
+    
+    # Generate (using Ollama)
+    url = "http://localhost:11434/api/generate"
+    response = requests.post(url, json={
+        "model": "mistral",
+        "prompt": prompt,
+        "stream": False
+    })
+    
+    answer = response.json()['response']
+    print(f"\nAnswer:\n{answer}")
+    
+    return answer
+
+# Test it!
+if __name__ == "__main__":
+    # Make sure Ollama is running: ollama serve
+    
+    test_queries = [
+        "What is Python?",
+        "Which language is spoken in France?",
+        "Tell me about machine learning"
+    ]
+    
+    for query in test_queries:
+        answer_question(query)
+        print("\n" + "="*80 + "\n")
+```
+
+**Tasks:**
+- [ ] Create knowledge base with 10+ documents
+- [ ] Test retrieval (does it find relevant docs?)
+- [ ] Test generation (does answer use context?)
+- [ ] Try different queries
+- [ ] Measure retrieval accuracy
+
+**Output:** Working RAG system that answers questions
+
+---
+
+## Week 13: Document Chunking
+
+### Why Chunking?
+Long documents are too long to fit in one prompt. Split into smaller chunks.
+
+### Strategies
+```
+Document: "The quick brown fox... [5000 words]..."
+
+Option 1: Fixed size (256 tokens per chunk, 50% overlap)
+Chunk 1: "[token 0-256]"
+Chunk 2: "[token 128-384]" (50% overlap)
+Chunk 3: "[token 256-512]"
+...
+
+Option 2: By content (split at paragraphs/sections)
+Chunk 1: "Title: Introduction
+...paragraph text..."
+Chunk 2: "Title: Methods
+...paragraph text..."
+```
+
+### Project: 02_Document_Chunking
+
+**File:** `03_LLM/02_RAG/02_Document_Chunking/chunking.py`
+
+```python
+from langchain.text_splitter import (
+    RecursiveCharacterTextSplitter,
+    CharacterTextSplitter
+)
+
+# Sample document
+document = """
+Introduction to Machine Learning
+
+Machine Learning is a subset of Artificial Intelligence that focuses on 
+enabling computers to learn from data without being explicitly programmed. 
+It involves developing algorithms and statistical models that can improve 
+their performance on a task through experience.
+
+Types of Machine Learning
+
+Supervised Learning is where models learn from labeled data. The model learns 
+the relationship between input features and target outputs. Examples include 
+regression and classification tasks.
+
+Unsupervised Learning involves finding patterns in unlabeled data. Common 
+techniques include clustering and dimensionality reduction.
+
+Reinforcement Learning is about learning through interaction with an environment. 
+The agent learns to maximize cumulative rewards through trial and error.
+
+Applications
+
+Machine Learning has revolutionized many fields including:
+- Healthcare: Disease diagnosis and drug discovery
+- Finance: Fraud detection and risk assessment
+- Retail: Recommendation systems
+- Transportation: Autonomous vehicles
+"""
+
+# Method 1: Simple character-based splitting
+print("=" * 80)
+print("Method 1: Character-based Splitting")
+print("=" * 80)
+
+splitter = CharacterTextSplitter(
+    separator="\n\n",  # Split by double newlines first
+    chunk_size=200,    # Max 200 characters per chunk
+    chunk_overlap=50   # 50 char overlap
+)
+
+chunks = splitter.split_text(document)
+print(f"Number of chunks: {len(chunks)}\n")
+for i, chunk in enumerate(chunks):
+    print(f"Chunk {i+1} ({len(chunk)} chars):")
+    print(chunk[:100] + "...")
+    print()
+
+# Method 2: Recursive splitting (smarter, tries multiple separators)
+print("=" * 80)
+print("Method 2: Recursive Splitting")
+print("=" * 80)
+
+recursive_splitter = RecursiveCharacterTextSplitter(
+    separators=["\n\n", "\n", ".", " "],  # Try these in order
+    chunk_size=200,
+    chunk_overlap=50
+)
+
+chunks = recursive_splitter.split_text(document)
+print(f"Number of chunks: {len(chunks)}\n")
+for i, chunk in enumerate(chunks):
+    print(f"Chunk {i+1}:")
+    print(chunk)
+    print()
+
+# Method 3: Token-based splitting (more accurate for LLMs)
+print("=" * 80)
+print("Method 3: Token-based Splitting")
+print("=" * 80)
+
+from transformers import AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+
+def token_based_split(text, max_tokens=100, overlap_tokens=20):
+    """Split by token count instead of character count"""
+    tokens = tokenizer.encode(text)
+    chunks = []
+    
+    for i in range(0, len(tokens), max_tokens - overlap_tokens):
+        chunk_tokens = tokens[i:i + max_tokens]
+        chunk_text = tokenizer.decode(chunk_tokens)
+        chunks.append(chunk_text)
+    
+    return chunks
+
+chunks = token_based_split(document, max_tokens=50, overlap_tokens=10)
+print(f"Number of chunks: {len(chunks)}\n")
+for i, chunk in enumerate(chunks[:3]):  # Show first 3
+    print(f"Chunk {i+1}:")
+    print(chunk)
+    print()
+
+# Best practice recommendation
+print("=" * 80)
+print("Recommendation")
+print("=" * 80)
+print("""
+For RAG systems:
+1. Use RecursiveCharacterTextSplitter (handles most cases well)
+2. chunk_size: 256-512 tokens (depends on your embedding model)
+3. overlap: 10-20% of chunk_size (prevents context loss)
+4. Adjust based on your domain (scientific papers vs articles)
+""")
+```
+
+**Tasks:**
+- [ ] Split a long document (1000+ words)
+- [ ] Compare different chunking strategies
+- [ ] Understand chunk_overlap impact
+- [ ] Load a real PDF and chunk it
+
+**Output:** Chunked documents, comparison of strategies
+
+---
+
+## Week 14: Vector Embeddings & Storage
+
+### From Chunks to Vectors
+```
+Chunk 1: "Python is..." → Embed → [0.1, -0.2, 0.5, ...]
+Chunk 2: "ML is..." → Embed → [-0.1, 0.3, 0.4, ...]
+...all chunks embedded and stored in vector DB
+```
+
+### Project: 03_Vector_Embeddings
+
+**File:** `03_LLM/02_RAG/03_Vector_Embeddings/vector_storage.py`
+
+```python
+from sentence_transformers import SentenceTransformer
+import chromadb
+import numpy as np
+
+# Step 1: Create chunks (from previous week)
+chunks = [
+    "Python is a programming language used for AI and web development.",
+    "Machine Learning enables computers to learn from data automatically.",
+    "Deep Learning uses neural networks with multiple layers.",
+    "Natural Language Processing helps computers understand text.",
+    "Transformers are the foundation of modern LLMs."
+]
+
+# Step 2: Load embedding model
+embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+
+# Step 3: Create embeddings
+embeddings = embedding_model.encode(chunks)
+print(f"Created {len(embeddings)} embeddings of dimension {embeddings.shape[1]}")
+
+# Step 4: Initialize Chroma (in-memory for learning)
+client = chromadb.Client()
+collection = client.create_collection(
+    name="documents",
+    metadata={"hnsw:space": "cosine"}  # Use cosine similarity
+)
+
+# Step 5: Store chunks and embeddings in Chroma
+for i, chunk in enumerate(chunks):
+    collection.add(
+        ids=[f"doc_{i}"],
+        documents=[chunk],
+        embeddings=[embeddings[i].tolist()],
+        metadatas=[{"source": f"chunk_{i}"}]
+    )
+
+print(f"Stored {len(chunks)} documents in Chroma")
+
+# Step 6: Query the collection
+query = "Tell me about Python and machine learning"
+query_embedding = embedding_model.encode(query)
+
+results = collection.query(
+    query_embeddings=[query_embedding.tolist()],
+    n_results=2
+)
+
+print(f"\nQuery: {query}")
+print(f"Top results:")
+for i, (doc, distance) in enumerate(zip(results['documents'][0], results['distances'][0])):
+    print(f"  {i+1}. (similarity: {1-distance:.3f}) {doc}")
+
+# Step 7: Persistence (save to disk)
+print("\nSaving to disk...")
+persistent_client = chromadb.PersistentClient(path="./chroma_db")
+persistent_collection = persistent_client.create_collection(
+    name="documents"
+)
+
+for i, chunk in enumerate(chunks):
+    persistent_collection.add(
+        ids=[f"doc_{i}"],
+        documents=[chunk],
+        embeddings=[embeddings[i].tolist()]
+    )
+
+print("Saved! Data persists even after program exits.")
+
+# Load it back
+print("\nLoading from disk...")
+loaded_client = chromadb.PersistentClient(path="./chroma_db")
+loaded_collection = loaded_client.get_collection(name="documents")
+print(f"Loaded {loaded_collection.count()} documents from disk")
+```
+
+**Tasks:**
+- [ ] Embed 20+ documents
+- [ ] Store in Chroma
+- [ ] Query and retrieve
+- [ ] Save and reload from disk
+- [ ] Understand cosine similarity
+
+**Output:** Vector database with persistent storage
+
+---
+
+## Week 15: Semantic Search & LangChain Integration
+
+### Project: 04_Semantic_Search & 05_LangChain_Integration
+
+**File:** `03_LLM/02_RAG/04_Semantic_Search/semantic_search.py`
+
+```python
+from sentence_transformers import SentenceTransformer
+import chromadb
+
+# Create vector DB with documents
+documents = [
+    "The Eiffel Tower is in Paris, France.",
+    "Python is a programming language.",
+    "The Great Wall of China is in China.",
+    "JavaScript is used for web development.",
+    "Tokyo is the capital of Japan.",
+    "Data Science uses statistics and machine learning.",
+]
+
+embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+client = chromadb.Client()
+collection = client.create_collection(name="locations")
+
+# Store embeddings
+embeddings = embedding_model.encode(documents)
+for i, doc in enumerate(documents):
+    collection.add(
+        ids=[f"doc_{i}"],
+        documents=[doc],
+        embeddings=[embeddings[i].tolist()]
+    )
+
+# Semantic search function
+def semantic_search(query, top_k=2):
+    query_embedding = embedding_model.encode(query)
+    results = collection.query(
+        query_embeddings=[query_embedding.tolist()],
+        n_results=top_k
+    )
+    return results
+
+# Test searches
+queries = [
+    "Where is the Eiffel Tower?",
+    "Which programming languages are used for web?",
+    "Tell me about Python"
+]
+
+for query in queries:
+    results = semantic_search(query)
+    print(f"\nQuery: {query}")
+    print("Results:")
+    for doc in results['documents'][0]:
+        print(f"  - {doc}")
+```
+
+**File:** `03_LLM/02_RAG/05_LangChain_Integration/langchain_rag.py`
+
+```python
+from langchain.vectorstores import Chroma
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.llms import Ollama
+from langchain.chains import RetrievalQA
+
+# Step 1: Prepare documents
+documents_text = """
+Python is a programming language created by Guido van Rossum in 1989.
+It is known for its simple syntax and readability.
+
+Machine Learning is a field of AI where systems learn from data.
+Common techniques include supervised learning, unsupervised learning, and reinforcement learning.
+
+Transformers are neural network architectures introduced in 2017.
+They revolutionized Natural Language Processing with self-attention mechanisms.
+"""
+
+# Step 2: Split documents
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=200,
+    chunk_overlap=50
+)
+chunks = text_splitter.split_text(documents_text)
+print(f"Created {len(chunks)} chunks")
+
+# Step 3: Create embeddings
+embeddings = HuggingFaceEmbeddings(
+    model_name="all-MiniLM-L6-v2"
+)
+
+# Step 4: Create vector store
+vectorstore = Chroma.from_texts(
+    texts=chunks,
+    embedding=embeddings,
+    persist_directory="./chroma_langchain"
+)
+vectorstore.persist()
+
+# Step 5: Create LLM (Ollama)
+llm = Ollama(model="mistral", base_url="http://localhost:11434")
+
+# Step 6: Create RAG chain
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type="stuff",  # Combine retrieved docs into prompt
+    retriever=vectorstore.as_retriever(search_kwargs={"k": 2}),
+    return_source_documents=True
+)
+
+# Step 7: Ask questions
+questions = [
+    "What is Python?",
+    "Tell me about machine learning",
+    "Who created Transformers?"
+]
+
+for question in questions:
+    result = qa_chain({"query": question})
+    print(f"\nQuestion: {question}")
+    print(f"Answer: {result['result']}")
+    print(f"Sources:")
+    for doc in result['source_documents']:
+        print(f"  - {doc.page_content}")
+```
+
+**Tasks:**
+- [ ] Create end-to-end RAG with LangChain
+- [ ] Test with different queries
+- [ ] Understand chain types (stuff, map-reduce, refine)
+- [ ] Measure retrieval accuracy
+
+**Output:** Working RAG system with LangChain
+
+---
+
+# PHASE 4: Fine-tuning (Weeks 17+)
+
+## Week 17-18: LoRA Fine-tuning Basics
+
+### What is LoRA?
+**Problem:** Fine-tuning 7B model needs 40GB GPU memory
+
+**Solution:** Instead of updating all 7B parameters, only update small "adapter" matrices (0.1% parameters)
+
+### Memory Comparison
+- Full Fine-tuning (7B model): 40+ GB
+- LoRA (7B model, rank=8): 10-15 GB
+- Improvement: 4x less memory, 90% faster
+
+### Project: 01_LoRA_Basic
+
+**File:** `03_LLM/04_Fine_Tuning/01_LoRA_Basic/lora_training.py`
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
+from peft import LoraConfig, get_peft_model
+from trl import SFTTrainer
+import torch
+
+# Step 1: Load base model
+model_name = "mistral-7b"  # or "meta-llama/Llama-2-7b-hf"
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    device_map="auto",  # Auto distribute across available GPUs
+    torch_dtype=torch.float16  # Use fp16 to save memory
+)
+
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+tokenizer.pad_token = tokenizer.eos_token
+
+# Step 2: Configure LoRA
+lora_config = LoraConfig(
+    r=8,  # Rank (lower = fewer parameters, faster)
+    lora_alpha=16,  # Scaling factor
+    target_modules=["q_proj", "v_proj"],  # Which layers to adapt
+    lora_dropout=0.05,
+    bias="none",
+    task_type="CAUSAL_LM"
+)
+
+# Step 3: Create LoRA model (add adapters)
+model = get_peft_model(model, lora_config)
+print(f"Trainable parameters: {model.print_trainable_parameters()}")
+# Output should be ~0.1% of total
+
+# Step 4: Prepare training data
+training_data = [
+    {"text": "What is Python? Python is a programming language."},
+    {"text": "What is ML? Machine learning is a subset of AI."},
+    {"text": "What is DL? Deep learning uses neural networks."},
+    # ... more examples
+]
+
+# Step 5: Configure training
+training_args = TrainingArguments(
+    output_dir="./lora_output",
+    num_train_epochs=3,
+    per_device_train_batch_size=4,  # Small batch for limited GPU
+    save_steps=10,
+    save_total_limit=2,
+    logging_steps=5,
+    learning_rate=2e-4,
+    fp16=True,  # Mixed precision training
+    optim="paged_adamw_8bit"  # Memory efficient optimizer
+)
+
+# Step 6: Train with SFT (Supervised Fine-Tuning)
+trainer = SFTTrainer(
+    model=model,
+    tokenizer=tokenizer,
+    train_dataset=training_data,
+    args=training_args,
+    packing=True,  # Pack multiple examples per sequence
+    max_seq_length=512
+)
+
+trainer.train()
+
+# Step 7: Save LoRA weights (small files!)
+model.save_pretrained("./lora_weights")
+# Output: ~50MB instead of 14GB for full model!
+
+# Step 8: Load and use
+from peft import PeftModel
+
+base_model = AutoModelForCausalLM.from_pretrained(model_name)
+fine_tuned_model = PeftModel.from_pretrained(base_model, "./lora_weights")
+
+# Inference
+inputs = tokenizer("What is Python?", return_tensors="pt")
+outputs = fine_tuned_model.generate(**inputs)
+print(tokenizer.decode(outputs[0]))
+```
+
+**Tasks:**
+- [ ] Understand LoRA config parameters (r, lora_alpha, target_modules)
+- [ ] Train on small dataset (~10-50 examples)
+- [ ] Compare outputs before/after fine-tuning
+- [ ] Measure memory usage and training time
+
+**Output:** LoRA weights saved to disk, trained model working
+
+---
+
+## Week 19-20: QLoRA (Quantized LoRA)
+
+### QLoRA = Quantization + LoRA
+```
+Full Model: 14GB (7B params × 2 bytes fp16)
+   ↓
+Quantized: 3.5GB (4-bit quantization, 4x compression)
+   ↓
+Add LoRA: 3.5GB + 50MB adapters = 3.55GB
+   ↓
+Result: Fine-tune 13B/70B models on RTX 3090!
+```
+
+### Project: 02_QLoRA_Advanced
+
+**File:** `03_LLM/04_Fine_Tuning/02_QLoRA_Advanced/qlora_training.py`
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+from trl import SFTTrainer, TrainingArguments
+import torch
+
+# Step 1: Quantization config (4-bit)
+quantization_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_compute_dtype=torch.float16,
+    bnb_4bit_quant_type="nf4",  # 4-bit NormalFloat
+    bnb_4bit_use_double_quant=True  # Nested quantization
+)
+
+# Step 2: Load quantized model (4-bit)
+model_name = "mistral-7b"  # or larger like "meta-llama/Llama-2-13b-hf"
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    quantization_config=quantization_config,
+    device_map="auto"
+)
+
+# Step 3: Prepare model for training
+model = prepare_model_for_kbit_training(model)
+
+# Step 4: LoRA config
+lora_config = LoraConfig(
+    r=8,
+    lora_alpha=32,
+    target_modules=["q_proj", "v_proj", "k_proj", "o_proj"],  # More modules
+    lora_dropout=0.05,
+    bias="none",
+    task_type="CAUSAL_LM"
+)
+
+# Step 5: Apply LoRA
+model = get_peft_model(model, lora_config)
+print(model.print_trainable_parameters())
+
+# Step 6: Training arguments
+training_args = TrainingArguments(
+    output_dir="./qlora_output",
+    num_train_epochs=3,
+    per_device_train_batch_size=2,  # Even smaller batch
+    gradient_accumulation_steps=4,  # Simulate larger batch
+    save_steps=100,
+    logging_steps=10,
+    learning_rate=2e-4,
+    fp16=True,
+    optim="paged_adamw_8bit"  # Critical for memory efficiency
+)
+
+# Step 7: Training data (for real projects, load from huggingface)
+training_data = [
+    {"text": "Q: What is Python? A: Python is a programming language."},
+    {"text": "Q: What is ML? A: Machine learning is..."},
+]
+
+# Step 8: Train
+trainer = SFTTrainer(
+    model=model,
+    tokenizer=tokenizer,
+    train_dataset=training_data,
+    args=training_args,
+    packing=True,
+    max_seq_length=512
+)
+
+trainer.train()
+
+# Step 9: Save
+model.save_pretrained("./qlora_weights")
+
+# Step 10: Load and use quantized model
+from peft import PeftModel
+
+base_model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    quantization_config=quantization_config,
+    device_map="auto"
+)
+
+fine_tuned_model = PeftModel.from_pretrained(base_model, "./qlora_weights")
+
+# Inference
+inputs = tokenizer("Q: What is Python?", return_tensors="pt")
+outputs = fine_tuned_model.generate(**inputs, max_new_tokens=100)
+print(tokenizer.decode(outputs[0]))
+```
+
+**Key Differences from LoRA:**
+- BitsAndBytesConfig for 4-bit quantization
+- prepare_model_for_kbit_training() needed
+- Even smaller batch sizes work
+- Same memory as LoRA but trains larger models
+
+**Tasks:**
+- [ ] Fine-tune 13B model (much harder without QLoRA)
+- [ ] Compare QLoRA vs LoRA memory usage
+- [ ] Understand quantization trade-offs
+- [ ] Train on real dataset
+
+**Output:** 13B/70B model fine-tuned on consumer GPU
+
+---
+
+## Week 21+: Custom Datasets & Production
+
+### Project: 03_Custom_Dataset
+
+**File:** `03_LLM/04_Fine_Tuning/03_Custom_Dataset/prepare_dataset.py`
+
+```python
+import json
+from datasets import Dataset
+from transformers import AutoTokenizer
+
+# Example: Create instruction-following dataset
+
+dataset_dicts = [
+    {
+        "instruction": "What is Python?",
+        "input": "",
+        "output": "Python is a high-level programming language..."
+    },
+    {
+        "instruction": "Explain machine learning",
+        "input": "In simple terms",
+        "output": "Machine learning is when computers learn..."
+    },
+    # ... more examples
+]
+
+# Save as JSON
+with open("dataset.json", "w") as f:
+    json.dump(dataset_dicts, f)
+
+# Load with HuggingFace datasets
+def load_instruction_dataset(file_path):
+    with open(file_path) as f:
+        data = json.load(f)
+    
+    def format_prompt(example):
+        return {
+            "text": f"Instruction: {example['instruction']}\nInput: {example['input']}\nOutput: {example['output']}"
+        }
+    
+    dataset = Dataset.from_list(data)
+    dataset = dataset.map(format_prompt)
+    return dataset
+
+# Use in training
+train_dataset = load_instruction_dataset("dataset.json")
+# Pass to trainer as before
+```
+
+**Best Practices:**
+- 1000+ examples for good fine-tuning
+- Balance dataset (don't over-represent one type)
+- Test train/val split (80/20)
+- Use instruction format for chat models
+
+---
+
+## Summary Checklist
+
+### Phase 3: LLM & RAG
+- [ ] Week 9: Tokenization basics
+- [ ] Week 9-10: Embeddings and similarity
+- [ ] Week 10: Transformer architecture
+- [ ] Week 11: Ollama setup and inference
+- [ ] Week 12: Simple RAG hello world
+- [ ] Week 13: Document chunking strategies
+- [ ] Week 14: Vector embeddings with Chroma
+- [ ] Week 15: Semantic search and LangChain
+
+### Phase 4: Fine-tuning
+- [ ] Week 17-18: LoRA basics
+- [ ] Week 19-20: QLoRA advanced
+- [ ] Week 21+: Custom datasets and production
+
+---
+
+## GitHub Organization
+
+```
+03_LLM/
+├── 01_Fundamentals/
+│   ├── 01_Tokenization/
+│   │   ├── tokenizer_basics.py
+│   │   └── README.md
+│   ├── 02_Embeddings/
+│   │   ├── embedding_basics.py
+│   │   └── README.md
+│   ├── 03_Transformers/
+│   │   ├── transformer_basics.py
+│   │   └── README.md
+│   └── 04_Ollama/
+│       ├── ollama_setup.md
+│       ├── ollama_client.py
+│       └── README.md
+├── 02_RAG/
+│   ├── 01_Simple_RAG_HelloWorld/
+│   │   ├── rag_hello_world.py
+│   │   └── README.md
+│   ├── 02_Document_Chunking/
+│   │   ├── chunking.py
+│   │   └── README.md
+│   ├── 03_Vector_Embeddings/
+│   │   ├── vector_storage.py
+│   │   └── README.md
+│   ├── 04_Semantic_Search/
+│   │   ├── semantic_search.py
+│   │   └── README.md
+│   └── 05_LangChain_Integration/
+│       ├── langchain_rag.py
+│       └── README.md
+├── 03_Production_RAG/
+│   ├── backend/
+│   │   ├── main.py (FastAPI)
+│   │   └── rag_pipeline.py
+│   ├── frontend/
+│   │   └── src/
+│   └── docker-compose.yml
+└── 04_Fine_Tuning/
+    ├── 01_LoRA_Basic/
+    │   ├── lora_training.py
+    │   └── README.md
+    ├── 02_QLoRA_Advanced/
+    │   ├── qlora_training.py
+    │   └── README.md
+    └── 03_Custom_Dataset/
+        ├── prepare_dataset.py
+        └── README.md
+```
+
+---
+
+## Installation & Setup
+
+```bash
+# Create project directory
+mkdir -p 03_LLM && cd 03_LLM
+
+# Virtual environment
+python -m venv env
+source env/bin/activate  # Linux/Mac
+
+# Install dependencies (do this gradually as needed)
+pip install transformers torch sentence-transformers
+pip install langchain chromadb
+pip install ollama requests
+pip install peft bitsandbytes
+pip install datasets trl
+pip install fastapi uvicorn
+pip install jupyter
+
+# Download Ollama
+# Go to https://ollama.ai and download
+
+# After Ollama installed
+ollama pull mistral
+ollama pull llama2
+
+# Start Ollama in background
+ollama serve &
+```
+
+---
+
+## How to Use This Guide
+
+1. **Start at Week 9** with tokenization
+2. **Complete each week sequentially** - concepts build on each other
+3. **Code along** - don't just read, write code
+4. **Experiment** - change parameters, try different models
+5. **Document** - write READMEs explaining what you learned
+6. **Test** - verify each step works before moving to next
+7. **Commit to Git** - push progress regularly
+
+---
+
+## Expected Timeline
+
+- **Phase 3 (Weeks 9-16):** 8 weeks
+  - Fundamentals: 3 weeks
+  - RAG: 5 weeks
+- **Phase 4 (Weeks 17-21+):** 5+ weeks
+  - LoRA: 2 weeks
+  - QLoRA: 2 weeks
+  - Custom datasets + production: 1+ week
+
+**Total: 13+ weeks of structured learning**
+
+Good luck! This is intensive but you'll have production-ready skills.

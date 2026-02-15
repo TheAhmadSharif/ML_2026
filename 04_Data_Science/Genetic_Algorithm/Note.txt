@@ -1,0 +1,5 @@
+I want to learn Genetic Algorithm. I know basic ML algorithm like
+Linear Regression
+K-Means
+Naive Bayes
+KNN

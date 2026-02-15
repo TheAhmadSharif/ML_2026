@@ -1,0 +1,12 @@
+Linear Algebra
+    Vector, Matrix
+Calculas
+
+
+Python 
+    Numpy 
+    Pandas 
+    TensorFlow
+    PyTorch 
+    Keras 
+    Scikit Learn 
